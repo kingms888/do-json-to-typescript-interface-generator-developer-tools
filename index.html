@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>JSON to TypeScript Interface Generator | dev tools</title>
+  <meta name="description" content="Instantly convert JSON to TypeScript interfaces. Free, browser‑only developer tool for JSON to TS, CSV to YAML, Shopify SEO exports, and more.">
+  <meta name="keywords" content="json to typescript, json to interface, typescript generator, csv to yaml, shopify csv seo, developer tools, csv/json tools, shopify sellers, json to typescript interface generator">
+  <meta name="author" content="Toolkit.dev">
+  <meta name="robots" content="index, follow">
+  <!-- Open Graph -->
+  <meta property="og:title" content="JSON to TypeScript Interface Generator – instant, private, free">
+  <meta property="og:description" content="Paste JSON → get TypeScript interfaces. No server, no tracking. Built for developers.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://toolkit.dev/json-to-ts">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #f6f8fc;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      padding: 1rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+      padding: 1.8rem 1.5rem 2.5rem;
+      transition: box-shadow 0.2s;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    h1 small {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #475569;
+      background: #eef2f6;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      margin-left: 0.5rem;
+    }
+    .subhead {
+      margin-top: 0.25rem;
+      color: #475569;
+      border-left: 4px solid #3b82f6;
+      padding-left: 1rem;
+      font-weight: 400;
+      font-size: 1.05rem;
+    }
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.8rem;
+      margin: 2rem 0 1.8rem;
+    }
+    @media (max-width: 700px) {
+      .tool-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      h1 { font-size: 1.8rem; }
+    }
+    .panel {
+      background: #f9fafc;
+      border-radius: 1.2rem;
+      padding: 1.2rem 1.2rem 1.5rem;
+      border: 1px solid #e9edf2;
+    }
+    .panel h2 {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    textarea {
+      width: 100%;
+      min-height: 240px;
+      padding: 0.9rem 1rem;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.9rem;
+      background: white;
+      border: 1px solid #d1d9e6;
+      border-radius: 16px;
+      resize: vertical;
+      transition: 0.15s;
+      line-height: 1.5;
+      color: #0b1e33;
+    }
+    textarea:focus {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+      border-color: transparent;
+    }
+    .output-area {
+      background: #0b1e33;
+      color: #d6e2f0;
+      min-height: 240px;
+      border: none;
+    }
+    .output-area::placeholder {
+      color: #6a7f9b;
+      opacity: 0.7;
+    }
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 1rem 0 0.2rem;
+    }
+    .btn {
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.1s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .btn-primary {
+      background: #2563eb;
+      border: 1px solid #2563eb;
+      color: white;
+      box-shadow: 0 2px 6px rgba(37,99,235,0.2);
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #94a3b8;
+    }
+    .btn-outline:hover {
+      background: #eef2f6;
+    }
+    .btn:active {
+      transform: scale(0.96);
+    }
+    .badge {
+      background: #e6edf5;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #1e293b;
+    }
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .ad-placeholder {
+      background: #f1f5f9;
+      border-radius: 1.2rem;
+      padding: 0.8rem 1.2rem;
+      margin: 1.5rem 0 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px dashed #b9c8dd;
+      color: #334155;
+      font-size: 0.9rem;
+    }
+    .ad-placeholder span {
+      opacity: 0.7;
+    }
+    .ad-cta {
+      background: #e2e8f0;
+      padding: 0.2rem 1rem;
+      border-radius: 40px;
+      font-weight: 500;
+    }
+    .affiliate-resources {
+      background: #f1f5f9;
+      border-radius: 1.2rem;
+      padding: 1rem 1.4rem;
+      margin: 1.5rem 0 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.8rem 1.5rem;
+      border: 1px solid #e2e8f0;
+    }
+    .affiliate-resources strong {
+      font-weight: 600;
+    }
+    .affiliate-resources a {
+      color: #2563eb;
+      text-decoration: none;
+      border-bottom: 1px dotted #94a3b8;
+    }
+    .affiliate-resources a:hover {
+      border-bottom: 1px solid #2563eb;
+    }
+    .privacy-note {
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 0.6rem 1rem;
+      border-radius: 60px;
+      display: inline-block;
+      border: 1px solid #e2e8f0;
+    }
+    .footer-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .copy-ok {
+      color: #16a34a;
+      font-weight: 500;
+      margin-left: 0.5rem;
+    }
+    .status-msg {
+      font-size: 0.85rem;
+      color: #475569;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>
+      ⚡ JSON → TypeScript Interface
+      <small>dev tools</small>
+    </h1>
+    <div class="subhead">Paste any JSON & generate clean TypeScript interfaces. No upload, no server.</div>
+  </header>
+
+  <!-- Core tool -->
+  <div class="tool-grid">
+    <!-- Input panel -->
+    <div class="panel">
+      <div class="flex-between">
+        <h2><span>📄</span> JSON input</h2>
+        <span class="badge">paste or type</span>
+      </div>
+      <textarea id="jsonInput" placeholder='{"user": {"name": "Alice", "age": 30, "skills": ["js", "ts"]}}' spellcheck="false"></textarea>
+      <div class="button-group">
+        <button class="btn btn-primary" id="generateBtn">✨ Generate interfaces</button>
+        <button class="btn btn-outline" id="clearBtn">Clear</button>
+        <button class="btn btn-outline" id="sampleBtn">Load sample</button>
+      </div>
+      <div id="inputStatus" class="status-msg" style="margin-top: 0.5rem;"></div>
+    </div>
+
+    <!-- Output panel -->
+    <div class="panel">
+      <div class="flex-between">
+        <h2><span>🟦</span> TypeScript interfaces</h2>
+        <button class="btn btn-outline" id="copyBtn" style="padding: 0.3rem 1rem;">📋 Copy</button>
+      </div>
+      <textarea id="tsOutput" class="output-area" placeholder="// generated interfaces appear here" readonly spellcheck="false"></textarea>
+      <div id="outputStatus" class="status-msg" style="margin-top: 0.5rem;"></div>
+    </div>
+  </div>
+
+  <!-- Ad placeholder (visible, contextual) -->
+  <div class="ad-placeholder">
+    <span>📢 <strong>Sponsored</strong> – Speed up your API work</span>
+    <span class="ad-cta">⚡ <a href="#" style="text-decoration:none; color:#1e293b;" onclick="reportEvent('ad_click', {ad:'json-to-ts-banner'});return false;">Try Postman v11 (affiliate)</a> &nbsp;·&nbsp; <a href="#" style="text-decoration:none; color:#1e293b;" onclick="reportEvent('ad_click', {ad:'quicktype'});return false;">Quicktype</a></span>
+  </div>
+
+  <!-- Affiliate / resource section (Shopify, CSV, YAML tools) -->
+  <div class="affiliate-resources">
+    <strong>🔧 Developer toolchain</strong>
+    <a href="#" onclick="reportEvent('resource_click', {resource:'csv-to-yaml'});return false;">CSV → YAML</a>
+    <a href="#" onclick="reportEvent('resource_click', {resource:'shopify-csv-seo'});return false;">Shopify SEO CSV</a>
+    <a href="#" onclick="reportEvent('resource_click', {resource:'json-to-ts-pro'});return false;">JSON to TS Pro</a>
+    <a href="#" onclick="reportEvent('resource_click', {resource:'yaml-to-json'});return false;">YAML ⇄ JSON</a>
+    <span style="opacity:0.6; margin-left:auto; font-size:0.8rem;">affiliate links</span>
+  </div>
+
+  <!-- Privacy note + event reporting -->
+  <div class="footer-meta">
+    <div class="privacy-note">
+      🔒 Events may be counted anonymously for product improvement. No personal data collected.
+    </div>
+    <div style="font-size:0.75rem; color:#64748b;">
+      v1.0 · browser only
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- event reporting ----------
+    window.ORGANISM_METRICS_ENDPOINT = window.ORGANISM_METRICS_ENDPOINT || null; // configurable
+
+    window.reportEvent = function(name, payload = {}) {
+      const endpoint = window.ORGANISM_METRICS_ENDPOINT;
+      if (!endpoint) return; // only if configured
+      try {
+        const body = JSON.stringify({ event: name, payload, timestamp: Date.now() });
+        // use sendBeacon if available, else fetch (no blocking)
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(endpoint, body);
+        } else {
+          fetch(endpoint, { method: 'POST', body, keepalive: true, mode: 'no-cors' });
+        }
+      } catch (e) {
+        // silent fail
+      }
+    };
+
+    // ---------- DOM refs ----------
+    const jsonInput = document.getElementById('jsonInput');
+    const tsOutput = document.getElementById('tsOutput');
+    const generateBtn = document.getElementById('generateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const sampleBtn = document.getElementById('sampleBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const inputStatus = document.getElementById('inputStatus');
+    const outputStatus = document.getElementById('outputStatus');
+
+    // ---------- sample data ----------
+    const SAMPLE_JSON = `{
+  "users": [
+    {
+      "id": 1,
+      "name": "Alice",
+      "email": "alice@example.com",
+      "profile": {
+        "age": 30,
+        "isActive": true,
+        "roles": ["admin", "editor"],
+        "metadata": {
+          "lastLogin": "2025-03-01",
+          "loginCount": 42
+        }
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "totalPages": 10,
+    "hasNext": true
+  }
+}`;
+
+    // ---------- core logic: JSON to TS interfaces ----------
+    function jsonToTypescript(obj, name = 'RootObject') {
+      if (obj === null || obj === undefined) return `type ${name} = null;`;
+      if (typeof obj !== 'object') {
+        // primitive
+        const tsType = typeof obj;
+        if (tsType === 'string') return `type ${name} = string;`;
+        if (tsType === 'number') return `type ${name} = number;`;
+        if (tsType === 'boolean') return `type ${name} = boolean;`;
+        return `type ${name} = any;`;
+      }
+
+      if (Array.isArray(obj)) {
+        if (obj.length === 0) return `type ${name} = any[];`;
+        // infer from first element (simplified)
+        const itemType = jsonToTypescript(obj[0], `${name}Item`);
+        // if itemType is a full interface definition, we need to extract
+        // we'll collect all type definitions in a global set
+        const nested = [];
+        const itemDef = jsonToTypescript(obj[0], `${name}Item`, nested);
+        // combine
+        let result = `type ${name} = ${name}Item[];`;
+        if (nested.length) result = nested.join('\n\n') + '\n\n' + result;
+        return result;
+      }
+
+      // object
+      const keys = Object.keys(obj);
+      if (keys.length === 0) return `type ${name} = Record<string, any>;`;
+
+      let fields = [];
+      let subTypes = [];
+
+      for (const key of keys) {
+        const value = obj[key];
+        const sanitizedKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key) ? key : `'${key}'`;
+        const valueType = typeof value;
+        let tsType = 'any';
+
+        if (value === null) {
+          tsType = 'null';
+        } else if (Array.isArray(value)) {
+          if (value.length === 0) {
+            tsType = 'any[]';
+          } else {
+            const itemTypeName = `${name}${key.charAt(0).toUpperCase() + key.slice(1)}Item`;
+            const itemDef = jsonToTypescript(value[0], itemTypeName);
+            // itemDef might contain multiple lines (type + nested)
+            if (itemDef.includes(`type ${itemTypeName} =`)) {
+              // extract the type
+              const lines = itemDef.split('\n');
+              for (const line of lines) {
+                if (line.includes(`type ${itemTypeName} =`)) {
+                  const match = line.match(/type\s+\w+\s*=\s*(.+);/);
+                  if (match) {
+                    tsType = `${match[1]}[]`;
+                  } else {
+                    tsType = `${itemTypeName}[]`;
+                  }
+                  // collect full definition if not already present
+                  if (!subTypes.includes(itemDef)) subTypes.push(itemDef);
+                  break;
+                }
+              }
+              if (tsType === `${itemTypeName}[]`) {
+                // fallback
+                tsType = `any[]`;
+              }
+            } else {
+              tsType = `any[]`;
+            }
+          }
+        } else if (typeof value === 'object') {
+          const nestedName = `${name}${key.charAt(0).toUpperCase() + key.slice(1)}`;
+          const nestedDef = jsonToTypescript(value, nestedName);
+          tsType = nestedName;
+          if (!subTypes.includes(nestedDef)) subTypes.push(nestedDef);
+        } else {
+          // primitive
+          if (typeof value === 'string') tsType = 'string';
+          else if (typeof value === 'number') tsType = 'number';
+          else if (typeof value === 'boolean') tsType = 'boolean';
+          else tsType = 'any';
+        }
+
+        fields.push(`  ${sanitizedKey}: ${tsType};`);
+      }
+
+      let interfaceStr = `interface ${name} {\n${fields.join('\n')}\n}`;
+      if (subTypes.length) {
+        interfaceStr = subTypes.join('\n\n') + '\n\n' + interfaceStr;
+      }
+      return interfaceStr;
+    }
+
+    // improved generator that collects all definitions
+    function generateInterfaces(jsonStr) {
+      let parsed;
+      try {
+        parsed = JSON.parse(jsonStr);
+      } catch (e) {
+        return { error: `❌ Invalid JSON: ${e.message}` };
+      }
+      if (typeof parsed !== 'object' || parsed === null) {
+        return { error: '⚠️ JSON must be an object or array at root.' };
+      }
+      const result = jsonToTypescript(parsed, 'RootObject');
+      // clean up duplicate newlines
+      const cleaned = result.replace(/\n{3,}/g, '\n\n').trim();
+      return { result: cleaned };
+    }
+
+    // ---------- render ----------
+    function render() {
+      const raw = jsonInput.value.trim();
+      if (!raw) {
+        tsOutput.value = '';
+        inputStatus.textContent = '';
+        outputStatus.textContent = '';
+        return;
+      }
+      const { result, error } = generateInterfaces(raw);
+      if (error) {
+        tsOutput.value = '';
+        outputStatus.textContent = error;
+        outputStatus.style.color = '#b91c1c';
+        inputStatus.textContent = '';
+      } else {
+        tsOutput.value = result;
+        outputStatus.textContent = '✅ Generated';
+        outputStatus.style.color = '#16a34a';
+        inputStatus.textContent = '';
+      }
+    }
+
+    // ---------- event handlers ----------
+    generateBtn.addEventListener('click', function() {
+      reportEvent('generate_click', { source: 'button' });
+      render();
+    });
+
+    clearBtn.addEventListener('click', function() {
+      jsonInput.value = '';
+      tsOutput.value = '';
+      inputStatus.textContent = '';
+      outputStatus.textContent = '';
+      reportEvent('clear_click', {});
+    });
+
+    sampleBtn.addEventListener('click', function() {
+      jsonInput.value = SAMPLE_JSON;
+      reportEvent('sample_loaded', {});
+      render();
+    });
+
+    copyBtn.addEventListener('click', function() {
+      const text = tsOutput.value;
+      if (!text) {
+        outputStatus.textContent = '⚠️ Nothing to copy';
+        outputStatus.style.color = '#b45309';
+        return;
+      }
+      navigator.clipboard.writeText(text).then(() => {
+        outputStatus.textContent = '📋 Copied!';
+        outputStatus.style.color = '#16a34a';
+        reportEvent('copy_ts', { length: text.length });
+      }).catch(() => {
+        outputStatus.textContent = '❌ Copy failed';
+        outputStatus.style.color = '#b91c1c';
+      });
+    });
+
+    // auto-generate on input? we use button, but add a debounce for convenience
+    let timeout = null;
+    jsonInput.addEventListener('input', function() {
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        if (jsonInput.value.trim()) {
+          // only update status, not full render (user may prefer button)
+          // but we can show a hint
+          inputStatus.textContent = '⏎ Press “Generate” to update';
+          inputStatus.style.color = '#64748b';
+        } else {
+          inputStatus.textContent = '';
+          tsOutput.value = '';
+          outputStatus.textContent = '';
+        }
+      }, 400);
+    });
+
+    // initial sample load
+    jsonInput.value = SAMPLE_JSON;
+    render();
+    inputStatus.textContent = '✅ Sample loaded. Edit or press Generate.';
+    inputStatus.style.color = '#475569';
+
+    // report page view (anonymized)
+    reportEvent('page_view', { tool: 'json-to-ts-interface' });
+  })();
+</script>
+
+<section data-organism-discovery="hub" style="margin:32px auto 20px;max-width:1040px;padding:16px;border-top:1px solid #d9e2ec;color:#475569;font:14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <strong style="display:block;color:#0f172a;margin-bottom:6px">More free browser tools</strong>
+  <p style="margin:0 0 8px">This page is part of an autonomous micro-tool network. Explore the live tool directory and related utilities.</p>
+  <p style="margin:0"><a href="https://kingms888.github.io/do-digital-organism-index/" style="color:#0f766e;font-weight:700">Open the tool directory</a> </p>
+</section>
+</body>
+</html>
